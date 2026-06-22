@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>경기 결과 예측 게임 — 2026 월드컵 | WC2026 Hub</title>
+  <meta name="description" content="2026 FIFA 월드컵 경기 결과를 예측해보세요! 한국 vs 남아공, 누가 이길까요? 실시간 전 세계 팬들의 예측 현황 공개.">
+  <meta property="og:title" content="⚽ 2026 월드컵 경기 예측 — 당신의 예측은?">
+  <link rel="stylesheet" href="../css/style.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5553509544218511" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYCX88DFYM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NYCX88DFYM');
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+
+    .predict-wrap {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 16px 40px;
+    }
+
+    .predict-header {
+      text-align: center;
+      padding: 28px 0 20px;
+    }
+    .predict-header h1 {
+      font-size: 1.6rem;
+      color: #f4c842;
+      margin-bottom: 6px;
+    }
+    .predict-header p { color: #aaa; font-size: 0.9rem; }
+
+    /* 경기 카드 */
+    .match-card {
+      background: #1a1a2e;
+      border: 1.5px solid #2a2a4a;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 24px;
+      transition: border-color 0.3s;
+    }
+    .match-card.voted { border-color: #f4c842; }
+
+    .match-badge {
+      background: #0d0d1a;
+      padding: 8px 16px;
+      font-size: 0.78rem;
+      color: #f4c842;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge-closed { color: #e63946; }
+
+    .match-body { padding: 24px 20px; }
+
+    /* VS 영역 */
+    .vs-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      gap: 8px;
+    }
+    .team-block {
+      flex: 1;
+      text-align: center;
+    }
+    .team-flag { font-size: 3.2rem; display: block; margin-bottom: 6px; }
+    .team-name { font-size: 1rem; font-weight: 700; color: #fff; }
+    .vs-divider {
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: #555;
+      flex-shrink: 0;
+      padding: 0 4px;
+    }
+    .match-info {
+      text-align: center;
+      color: #888;
+      font-size: 0.8rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .match-info strong { color: #ccc; }
+
+    /* 예측 버튼 */
+    .predict-btns {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .predict-btn {
+      padding: 14px 8px;
+      border: 1.5px solid #2a2a4a;
+      border-radius: 14px;
+      background: #0d0d1a;
+      color: #ccc;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s;
+      line-height: 1.4;
+    }
+    .predict-btn:hover:not(:disabled) {
+      border-color: #f4c842;
+      color: #f4c842;
+      transform: scale(1.03);
+    }
+    .predict-btn.selected {
+      border-color: #f4c842;
+      background: #2a2200;
+      color: #f4c842;
+    }
+    .predict-btn.draw-btn { font-size: 0.8rem; }
+    .predict-btn:disabled { cursor: default; opacity: 0.7; }
+    .predict-btn .btn-flag { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+    .predict-btn .btn-label { font-size: 0.75rem; opacity: 0.8; }
+
+    /* 스코어 예측 */
+    .score-section {
+      background: #0d0d1a;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+    .score-section label {
+      font-size: 0.8rem;
+      color: #888;
+      display: block;
+      margin-bottom: 10px;
+    }
+    .score-inputs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+    .score-input {
+      width: 56px;
+      height: 48px;
+      background: #1a1a2e;
+      border: 1.5px solid #2a2a4a;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-align: center;
+      outline: none;
+    }
+    .score-input:focus { border-color: #f4c842; }
+    .score-colon { font-size: 1.6rem; color: #555; font-weight: 700; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #f4c842, #e6a817);
+      color: #0d0d1a;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .btn-submit:hover { transform: scale(1.02); box-shadow: 0 4px 16px rgba(244,200,66,0.4); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* 결과 바 */
+    .result-section { margin-top: 4px; }
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .result-title { color: #f4c842; font-size: 0.88rem; font-weight: 700; }
+    .result-count { color: #888; font-size: 0.8rem; }
+
+    .result-row { margin-bottom: 12px; }
+    .result-row-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      margin-bottom: 5px;
+      color: #ccc;
+    }
+    .result-row-label .pct { color: #f4c842; font-weight: 700; }
+    .bar-bg {
+      background: #0d0d1a;
+      border-radius: 99px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.8s ease;
+      background: linear-gradient(90deg, #f4c842, #e63946);
+    }
+    .bar-fill.draw { background: #555; }
+    .bar-fill.away { background: linear-gradient(90deg, #4a9eff, #0066cc); }
+
+    .my-vote-badge {
+      display: inline-block;
+      background: #f4c842;
+      color: #0d0d1a;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 99px;
+      margin-left: 6px;
+    }
+
+    .top-score {
+      margin-top: 12px;
+      background: #0d0d1a;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #888;
+    }
+    .top-score span { color: #f4c842; font-weight: 700; }
+
+    .share-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .btn-share-sm {
+      flex: 1;
+      padding: 10px;
+      border-radius: 50px;
+      font-size: 0.83rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s;
+    }
+    .btn-share-sm:hover { transform: scale(1.03); }
+    .btn-share-link { background: #2a2a4a; color: #f4c842; border: 1.5px solid #f4c842; }
+
+    .coming-soon-card {
+      background: #1a1a2e;
+      border: 1.5px dashed #2a2a4a;
+      border-radius: 20px;
+      padding: 28px;
+      text-align: center;
+      color: #555;
+    }
+    .coming-soon-card .cs-emoji { font-size: 2rem; display: block; margin-bottom: 8px; }
+
+    .share-toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #f4c842;
+      color: #0d0d1a;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .share-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 400px) {
+      .team-flag { font-size: 2.4rem; }
+      .team-name { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">⚽ WC2026 Hub</a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">대시보드</a>
+      <a href="index.html" class="nav-link active">블로그</a>
+      <a href="../about.html" class="nav-link">소개</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="ad-slot ad-leaderboard">광고 영역 (728×90)</div>
+
+  <div class="predict-wrap">
+    <div class="predict-header">
+      <h1>⚽ 경기 예측 게임</h1>
+      <p>경기 시작 전, 당신의 예측을 남겨보세요<br>실시간으로 전체 예측 현황을 확인할 수 있어요</p>
+    </div>
+
+    <div id="matches-container"></div>
+
+    <div class="coming-soon-card">
+      <span class="cs-emoji">🗓️</span>
+      <p>16강 대진이 확정되면 더 많은 경기 예측이 추가됩니다!</p>
+    </div>
+
+    <div style="text-align:center; margin-top: 20px;">
+      <a href="quiz.html" style="color:#f4c842; font-size:0.9rem;">⚽ 나는 어느 나라 축구 스타일? 퀴즈도 해보기 →</a>
+    </div>
+  </div>
+</div>
+
+<div class="share-toast" id="share-toast">✅ 링크가 복사됐어요!</div>
+
+<footer class="site-footer">
+  <p>© 2026 WC2026 Hub — 비공식 팬 사이트 · FIFA와 무관 &nbsp;|&nbsp;
+    <a href="../privacy.html">개인정보처리방침</a>
+  </p>
+</footer>
+
+<script>
+// ─── 경기 데이터 ───────────────────────────────────────────
+const MATCHES = [
+  {
+    id: "korea-rsa-r3",
+    group: "A조 3라운드",
+    dateKST: "6월 25일 (목) 오전 10:00 KST",
+    venue: "에스타디오 아크론 · 과달라하라",
+    home: { flag: "🇰🇷", name: "대한민국" },
+    away: { flag: "🇿🇦", name: "남아공" },
+    deadlineUTC: "2026-06-25T01:00:00Z",  // 예측 마감 (경기 시작)
+    note: "⚠️ 무승부 이상이면 한국 16강 확정!"
+  },
+  {
+    id: "mexico-czech-r3",
+    group: "A조 3라운드",
+    dateKST: "6월 25일 (목) 오전 10:00 KST",
+    venue: "에스타디오 BBVA · 몬테레이",
+    home: { flag: "🇲🇽", name: "멕시코" },
+    away: { flag: "🇨🇿", name: "체코" },
+    deadlineUTC: "2026-06-25T01:00:00Z",
+    note: "멕시코는 이미 16강 확정 — 체코의 마지막 도전"
+  }
+];
+
+// ─── CountAPI 투표 저장 ────────────────────────────────────
+// 무료 카운터 API — 별도 설정 불필요
+const NS = "wc2026hub-v2";
+
+async function getVotes(matchId) {
+  try {
+    const [h, d, a] = await Promise.all([
+      fetch(`https://api.countapi.xyz/get/${NS}/${matchId}-home`).then(r => r.json()),
+      fetch(`https://api.countapi.xyz/get/${NS}/${matchId}-draw`).then(r => r.json()),
+      fetch(`https://api.countapi.xyz/get/${NS}/${matchId}-away`).then(r => r.json()),
+    ]);
+    return {
+      home: Math.max(0, h.value || 0),
+      draw: Math.max(0, d.value || 0),
+      away: Math.max(0, a.value || 0)
+    };
+  } catch {
+    return { home: 0, draw: 0, away: 0 };
+  }
+}
+
+async function castVote(matchId, outcome) {
+  try {
+    await fetch(`https://api.countapi.xyz/hit/${NS}/${matchId}-${outcome}`);
+  } catch {}
+}
+
+// ─── localStorage 투표 기록 ───────────────────────────────
+function getMyVote(matchId) {
+  return localStorage.getItem(`predict_${matchId}`);
+}
+function setMyVote(matchId, data) {
+  localStorage.setItem(`predict_${matchId}`, JSON.stringify(data));
+}
+function parseMyVote(matchId) {
+  try { return JSON.parse(getMyVote(matchId)); } catch { return null; }
+}
+
+// ─── 퍼센트 계산 ──────────────────────────────────────────
+function calcPct(votes) {
+  const total = votes.home + votes.draw + votes.away;
+  if (total === 0) return { home: 33, draw: 34, away: 33, total: 0 };
+  return {
+    home: Math.round((votes.home / total) * 100),
+    draw: Math.round((votes.draw / total) * 100),
+    away: Math.round((votes.away / total) * 100),
+    total
+  };
+}
+
+// ─── 마감 여부 ────────────────────────────────────────────
+function isClosed(deadlineUTC) {
+  return new Date() >= new Date(deadlineUTC);
+}
+
+// ─── 카드 렌더 ────────────────────────────────────────────
+function renderCard(m, votes, myVote) {
+  const closed = isClosed(m.deadlineUTC);
+  const showResults = myVote || closed;
+  const pct = calcPct(votes);
+  const voted = myVote ? myVote.outcome : null;
+
+  const outcomeLabel = { home: `${m.home.name} 승`, draw: "무승부", away: `${m.away.name} 승` };
+
+  return `
+  <div class="match-card ${myVote ? 'voted' : ''}" id="card-${m.id}">
+    <div class="match-badge">
+      <span>${m.group}</span>
+      ${closed
+        ? `<span class="badge-closed">🔒 예측 마감</span>`
+        : `<span style="color:#4caf50">🟢 예측 참여중</span>`}
+    </div>
+    <div class="match-body">
+      <div class="vs-row">
+        <div class="team-block">
+          <span class="team-flag">${m.home.flag}</span>
+          <div class="team-name">${m.home.name}</div>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="team-block">
+          <span class="team-flag">${m.away.flag}</span>
+          <div class="team-name">${m.away.name}</div>
+        </div>
+      </div>
+      <div class="match-info">
+        <strong>${m.dateKST}</strong><br>
+        ${m.venue}<br>
+        <span style="color:#f4c842; font-size:0.78rem">${m.note}</span>
+      </div>
+
+      ${showResults ? renderResults(m, pct, voted, myVote) : renderVoteForm(m, closed)}
+    </div>
+  </div>`;
+}
+
+function renderVoteForm(m, closed) {
+  return `
+    <div class="predict-btns">
+      <button class="predict-btn" onclick="selectPick('${m.id}', 'home', this)" ${closed ? 'disabled' : ''}>
+        <span class="btn-flag">${m.home.flag}</span>
+        ${m.home.name} 승
+        <span class="btn-label">홈팀 승리</span>
+      </button>
+      <button class="predict-btn draw-btn" onclick="selectPick('${m.id}', 'draw', this)" ${closed ? 'disabled' : ''}>
+        🤝<br>무승부
+      </button>
+      <button class="predict-btn" onclick="selectPick('${m.id}', 'away', this)" ${closed ? 'disabled' : ''}>
+        <span class="btn-flag">${m.away.flag}</span>
+        ${m.away.name} 승
+        <span class="btn-label">원정팀 승리</span>
+      </button>
+    </div>
+
+    <div class="score-section">
+      <label>🎯 스코어 예측 (선택)</label>
+      <div class="score-inputs">
+        <span style="font-size:1.2rem">${m.home.flag}</span>
+        <input class="score-input" type="number" min="0" max="20" placeholder="0" id="sh-${m.id}">
+        <span class="score-colon">:</span>
+        <input class="score-input" type="number" min="0" max="20" placeholder="0" id="sa-${m.id}">
+        <span style="font-size:1.2rem">${m.away.flag}</span>
+      </div>
+    </div>
+
+    <button class="btn-submit" id="submit-${m.id}" onclick="submitVote('${m.id}')" disabled>
+      예측 제출하기
+    </button>`;
+}
+
+function renderResults(m, pct, voted, myVote) {
+  const total = pct.total;
+  const scoreText = (myVote && myVote.scoreHome !== '' && myVote.scoreAway !== '')
+    ? `<div class="top-score">내 스코어 예측: <span>${m.home.flag} ${myVote.scoreHome} : ${myVote.scoreAway} ${m.away.flag}</span></div>`
+    : '';
+
+  return `
+    <div class="result-section">
+      <div class="result-header">
+        <span class="result-title">📊 실시간 예측 현황</span>
+        <span class="result-count">${total > 0 ? total + '명 참여' : '첫 번째로 예측해보세요!'}</span>
+      </div>
+
+      <div class="result-row">
+        <div class="result-row-label">
+          <span>${m.home.flag} ${m.home.name} 승 ${voted === 'home' ? '<span class="my-vote-badge">내 예측</span>' : ''}</span>
+          <span class="pct">${pct.home}%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill" style="width:${pct.home}%"></div></div>
+      </div>
+
+      <div class="result-row">
+        <div class="result-row-label">
+          <span>🤝 무승부 ${voted === 'draw' ? '<span class="my-vote-badge">내 예측</span>' : ''}</span>
+          <span class="pct">${pct.draw}%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill draw" style="width:${pct.draw}%"></div></div>
+      </div>
+
+      <div class="result-row">
+        <div class="result-row-label">
+          <span>${m.away.flag} ${m.away.name} 승 ${voted === 'away' ? '<span class="my-vote-badge">내 예측</span>' : ''}</span>
+          <span class="pct">${pct.away}%</span>
+        </div>
+        <div class="bar-bg"><div class="bar-fill away" style="width:${pct.away}%"></div></div>
+      </div>
+
+      ${scoreText}
+
+      <div class="share-row">
+        <button class="btn-share-sm btn-share-link" onclick="sharePredict('${m.id}', '${voted}', '${m.home.name}', '${m.away.name}', '${m.home.flag}', '${m.away.flag}', ${pct.home}, ${pct.away})">
+          🔗 예측 결과 공유하기
+        </button>
+      </div>
+    </div>`;
+}
+
+// ─── 선택 처리 ────────────────────────────────────────────
+let selected = {};
+
+function selectPick(matchId, outcome, btn) {
+  selected[matchId] = outcome;
+  const card = document.getElementById(`card-${matchId}`);
+  card.querySelectorAll('.predict-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById(`submit-${matchId}`).disabled = false;
+}
+
+async function submitVote(matchId) {
+  const outcome = selected[matchId];
+  if (!outcome) return;
+
+  const submitBtn = document.getElementById(`submit-${matchId}`);
+  submitBtn.disabled = true;
+  submitBtn.textContent = '제출 중...';
+
+  const sh = document.getElementById(`sh-${matchId}`)?.value || '';
+  const sa = document.getElementById(`sa-${matchId}`)?.value || '';
+
+  await castVote(matchId, outcome);
+
+  setMyVote(matchId, { outcome, scoreHome: sh, scoreAway: sa });
+
+  // 결과 불러와서 카드 재렌더
+  const m = MATCHES.find(m => m.id === matchId);
+  const votes = await getVotes(matchId);
+  const pct = calcPct(votes);
+  const myVote = parseMyVote(matchId);
+
+  const card = document.getElementById(`card-${matchId}`);
+  card.querySelector('.match-body').innerHTML =
+    `<div class="vs-row">
+      <div class="team-block"><span class="team-flag">${m.home.flag}</span><div class="team-name">${m.home.name}</div></div>
+      <div class="vs-divider">VS</div>
+      <div class="team-block"><span class="team-flag">${m.away.flag}</span><div class="team-name">${m.away.name}</div></div>
+    </div>
+    <div class="match-info"><strong>${m.dateKST}</strong><br>${m.venue}<br><span style="color:#f4c842;font-size:.78rem">${m.note}</span></div>
+    ${renderResults(m, pct, outcome, myVote)}`;
+  card.classList.add('voted');
+}
+
+function sharePredict(matchId, voted, homeName, awayName, homeFlag, awayFlag, homePct, awayPct) {
+  const outcomeText = voted === 'home' ? `${homeFlag} ${homeName} 승리` :
+                      voted === 'away' ? `${awayFlag} ${awayName} 승리` : '🤝 무승부';
+  const text = `⚽ 내 예측: ${outcomeText}!\n현재 팬들 예측 — ${homeFlag} ${homePct}% vs ${awayFlag} ${awayPct}%\n\n당신의 예측은? 👇\nhttps://www.dreamingblog.com/blog/predict.html`;
+
+  if (navigator.share) {
+    navigator.share({ title: '2026 월드컵 경기 예측', text }).catch(() => copyText(text));
+  } else {
+    copyText(text);
+  }
+}
+
+function copyText(text) {
+  navigator.clipboard?.writeText(text).then(showToast) || (() => {
+    const el = document.createElement('textarea');
+    el.value = text; document.body.appendChild(el); el.select();
+    document.execCommand('copy'); document.body.removeChild(el); showToast();
+  })();
+}
+
+function showToast() {
+  const t = document.getElementById('share-toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ─── 초기화 ───────────────────────────────────────────────
+async function init() {
+  const container = document.getElementById('matches-container');
+  container.innerHTML = MATCHES.map(() =>
+    `<div class="match-card" style="padding:20px; text-align:center; color:#555">불러오는 중...</div>`
+  ).join('');
+
+  const allVotes = await Promise.all(MATCHES.map(m => getVotes(m.id)));
+
+  container.innerHTML = MATCHES.map((m, i) => {
+    const myVote = parseMyVote(m.id);
+    return renderCard(m, allVotes[i], myVote);
+  }).join('');
+}
+
+init();
+</script>
+</body>
+</html>
