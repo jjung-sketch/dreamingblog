@@ -156,7 +156,15 @@
       outline: none;
     }
     .score-input:focus { border-color: #f4c842; }
+    .score-input.invalid { border-color: #e63946; }
     .score-colon { font-size: 1.6rem; color: #555; font-weight: 700; }
+    .score-hint {
+      text-align: center;
+      font-size: 0.78rem;
+      margin-top: 8px;
+      min-height: 1.2em;
+      color: #e63946;
+    }
 
     .btn-submit {
       width: 100%;
@@ -466,11 +474,12 @@ function renderVoteForm(m, closed) {
       <label>🎯 스코어 예측 (선택)</label>
       <div class="score-inputs">
         <span style="font-size:1.2rem">${m.home.flag}</span>
-        <input class="score-input" type="number" min="0" max="20" placeholder="0" id="sh-${m.id}">
+        <input class="score-input" type="number" min="0" max="20" placeholder="0" id="sh-${m.id}" oninput="onScoreInput('${m.id}','home',this)">
         <span class="score-colon">:</span>
-        <input class="score-input" type="number" min="0" max="20" placeholder="0" id="sa-${m.id}">
+        <input class="score-input" type="number" min="0" max="20" placeholder="0" id="sa-${m.id}" oninput="onScoreInput('${m.id}','away',this)">
         <span style="font-size:1.2rem">${m.away.flag}</span>
       </div>
+      <p class="score-hint" id="score-hint-${m.id}"></p>
     </div>
 
     <button class="btn-submit" id="submit-${m.id}" onclick="submitVote('${m.id}')" disabled>
@@ -525,6 +534,55 @@ function renderResults(m, pct, voted, myVote) {
     </div>`;
 }
 
+// ─── 스코어 검증 ──────────────────────────────────────────
+function onScoreInput(matchId, side, inputEl) {
+  const outcome = selected[matchId];
+  if (!outcome) return;
+  const sh = document.getElementById(`sh-${matchId}`);
+  const sa = document.getElementById(`sa-${matchId}`);
+  // 무승부면 반대쪽 점수 자동 동기화
+  if (outcome === 'draw') {
+    if (side === 'home') sa.value = inputEl.value;
+    else sh.value = inputEl.value;
+  }
+  checkScoreHint(matchId);
+}
+
+function checkScoreHint(matchId) {
+  const outcome = selected[matchId];
+  const hint = document.getElementById(`score-hint-${matchId}`);
+  const sh = document.getElementById(`sh-${matchId}`);
+  const sa = document.getElementById(`sa-${matchId}`);
+  if (!hint || !sh || !sa) return true;
+
+  const hv = sh.value, av = sa.value;
+  sh.classList.remove('invalid');
+  sa.classList.remove('invalid');
+  hint.textContent = '';
+
+  if (hv === '' || av === '') return true; // 입력 안 했으면 통과
+
+  const h = parseInt(hv), a = parseInt(av);
+  if (isNaN(h) || isNaN(a)) return true;
+
+  if (outcome === 'draw' && h !== a) {
+    hint.textContent = '⚠️ 무승부 선택 시 동점 스코어를 입력해야 해요 (예: 1:1)';
+    sh.classList.add('invalid'); sa.classList.add('invalid');
+    return false;
+  }
+  if (outcome === 'home' && h <= a) {
+    hint.textContent = '⚠️ 홈팀 승리 선택 시 홈팀 스코어가 더 높아야 해요 (예: 2:1)';
+    sh.classList.add('invalid'); sa.classList.add('invalid');
+    return false;
+  }
+  if (outcome === 'away' && a <= h) {
+    hint.textContent = '⚠️ 원정팀 승리 선택 시 원정팀 스코어가 더 높아야 해요 (예: 0:1)';
+    sh.classList.add('invalid'); sa.classList.add('invalid');
+    return false;
+  }
+  return true;
+}
+
 // ─── 선택 처리 ────────────────────────────────────────────
 let selected = {};
 
@@ -534,18 +592,31 @@ function selectPick(matchId, outcome, btn) {
   card.querySelectorAll('.predict-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   document.getElementById(`submit-${matchId}`).disabled = false;
+
+  // 무승부 선택 시 이미 입력된 스코어가 있으면 동기화
+  const sh = document.getElementById(`sh-${matchId}`);
+  const sa = document.getElementById(`sa-${matchId}`);
+  if (sh && sa && outcome === 'draw' && sh.value !== '') {
+    sa.value = sh.value;
+  }
+  checkScoreHint(matchId);
 }
 
 async function submitVote(matchId) {
   const outcome = selected[matchId];
   if (!outcome) return;
 
+  const sh = document.getElementById(`sh-${matchId}`)?.value || '';
+  const sa = document.getElementById(`sa-${matchId}`)?.value || '';
+
+  // 스코어 입력했으면 일관성 검증
+  if (sh !== '' && sa !== '') {
+    if (!checkScoreHint(matchId)) return;
+  }
+
   const submitBtn = document.getElementById(`submit-${matchId}`);
   submitBtn.disabled = true;
   submitBtn.textContent = '제출 중...';
-
-  const sh = document.getElementById(`sh-${matchId}`)?.value || '';
-  const sa = document.getElementById(`sa-${matchId}`)?.value || '';
 
   await castVote(matchId, outcome);
 
