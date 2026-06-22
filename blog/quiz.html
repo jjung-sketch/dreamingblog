@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>나는 어느 나라 축구 스타일? 2026 월드컵 성향 퀴즈 | WC2026 Hub</title>
+  <meta name="description" content="브라질·독일·한국·프랑스·스페인·아르헨티나 중 나의 축구 스타일은? 5가지 질문으로 알아보는 2026 월드컵 성향 퀴즈.">
+  <meta property="og:title" content="나는 어느 나라 축구 스타일? 2026 월드컵 퀴즈">
+  <meta property="og:description" content="5가지 질문으로 알아보는 내 축구 성향 — 브라질? 독일? 한국?">
+  <link rel="stylesheet" href="../css/style.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5553509544218511" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYCX88DFYM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NYCX88DFYM');
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+
+    .quiz-wrap {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* 진행 바 */
+    .progress-bar-bg {
+      background: #1e1e2e;
+      border-radius: 99px;
+      height: 8px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f4c842, #e63946);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .progress-label {
+      text-align: right;
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 6px;
+    }
+
+    /* 시작 화면 */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    .start-card {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border: 1px solid #f4c842;
+      border-radius: 20px;
+      padding: 40px 28px;
+      text-align: center;
+    }
+    .start-card .big-emoji { font-size: 4rem; margin-bottom: 16px; }
+    .start-card h1 {
+      font-size: 1.5rem;
+      color: #f4c842;
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .start-card p {
+      color: #ccc;
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+      line-height: 1.6;
+    }
+    .country-flags {
+      font-size: 1.8rem;
+      letter-spacing: 4px;
+      margin-bottom: 28px;
+    }
+    .btn-start {
+      background: linear-gradient(135deg, #f4c842, #e6a817);
+      color: #0d0d1a;
+      border: none;
+      border-radius: 50px;
+      padding: 14px 40px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      width: 100%;
+    }
+    .btn-start:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(244,200,66,0.4); }
+
+    /* 질문 카드 */
+    .question-card {
+      background: #1a1a2e;
+      border-radius: 20px;
+      padding: 28px 20px;
+      animation: fadeSlide 0.35s ease;
+    }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .q-emoji { font-size: 2.8rem; text-align: center; margin-bottom: 12px; }
+    .q-text {
+      font-size: 1.15rem;
+      color: #fff;
+      text-align: center;
+      font-weight: 700;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .opt-btn {
+      background: #0d0d1a;
+      border: 1.5px solid #2a2a4a;
+      border-radius: 14px;
+      padding: 14px 10px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s;
+      color: #ddd;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+    .opt-btn:hover {
+      border-color: #f4c842;
+      background: #1e1e3a;
+      color: #fff;
+      transform: scale(1.03);
+    }
+    .opt-btn.selected {
+      border-color: #f4c842;
+      background: #2a2500;
+      color: #f4c842;
+    }
+    .opt-btn .opt-emoji { font-size: 1.6rem; display: block; margin-bottom: 6px; }
+
+    /* 결과 화면 */
+    .result-card {
+      border-radius: 24px;
+      padding: 36px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: fadeSlide 0.5s ease;
+    }
+    .result-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.12;
+      border-radius: 24px;
+    }
+    .result-flag { font-size: 5rem; margin-bottom: 8px; display: block; }
+    .result-country-name {
+      font-size: 2rem;
+      font-weight: 900;
+      margin-bottom: 4px;
+    }
+    .result-title {
+      font-size: 1rem;
+      opacity: 0.85;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .result-desc {
+      font-size: 0.93rem;
+      line-height: 1.7;
+      margin-bottom: 16px;
+      color: #eee;
+      text-align: left;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .result-style-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+
+    .btn-share {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-share:hover { transform: scale(1.03); }
+    .btn-share-kakao {
+      background: #FEE500;
+      color: #3A1D1D;
+    }
+    .btn-share-copy {
+      background: #2a2a4a;
+      color: #f4c842;
+      border: 1.5px solid #f4c842;
+    }
+    .btn-retry {
+      width: 100%;
+      padding: 13px;
+      background: transparent;
+      border: 1.5px solid #555;
+      border-radius: 50px;
+      color: #aaa;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: all 0.15s;
+    }
+    .btn-retry:hover { border-color: #f4c842; color: #f4c842; }
+
+    .share-toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #f4c842;
+      color: #0d0d1a;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: all 0.35s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    .share-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .ad-slot { margin: 20px 0; }
+
+    @media (max-width: 400px) {
+      .options-grid { grid-template-columns: 1fr; }
+      .start-card h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">⚽ WC2026 Hub</a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">대시보드</a>
+      <a href="index.html" class="nav-link active">블로그</a>
+      <a href="../about.html" class="nav-link">소개</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="ad-slot ad-leaderboard">광고 영역 (728×90)</div>
+
+  <div class="quiz-wrap">
+
+    <!-- 시작 화면 -->
+    <div class="screen active" id="screen-start">
+      <div class="start-card">
+        <div class="big-emoji">⚽</div>
+        <h1>나는 어느 나라<br>축구 스타일일까?</h1>
+        <p>5가지 질문으로 알아보는 나의 2026 월드컵 축구 성향<br>브라질·독일·한국·프랑스·스페인·아르헨티나 중 나는?</p>
+        <div class="country-flags">🇧🇷🇩🇪🇰🇷🇫🇷🇪🇸🇦🇷</div>
+        <button class="btn-start" onclick="startQuiz()">테스트 시작하기 →</button>
+      </div>
+    </div>
+
+    <!-- 퀴즈 화면 -->
+    <div class="screen" id="screen-quiz">
+      <div class="progress-label" id="progress-label">1 / 5</div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill" style="width:20%"></div>
+      </div>
+      <div class="question-card" id="question-card">
+        <!-- JS로 채워짐 -->
+      </div>
+    </div>
+
+    <!-- 결과 화면 -->
+    <div class="screen" id="screen-result">
+      <div id="result-card-wrap"></div>
+      <div class="ad-slot ad-inline">광고 영역 (본문 내 336×280)</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="share-toast" id="share-toast">✅ 링크가 복사됐어요!</div>
+
+<footer class="site-footer">
+  <p>© 2026 WC2026 Hub — 비공식 팬 사이트 · FIFA와 무관 &nbsp;|&nbsp;
+    <a href="../privacy.html">개인정보처리방침</a>
+  </p>
+</footer>
+
+<script>
+const questions = [
+  {
+    emoji: "🌅",
+    q: "주말 오후, 가장 하고 싶은 건?",
+    options: [
+      { emoji: "🎉", text: "신나게 파티에서\n춤추기", country: "brazil" },
+      { emoji: "📋", text: "철저하게 다음 주\n계획 세우기", country: "germany" },
+      { emoji: "💪", text: "힘들어도 쉬지 않고\n자기계발", country: "korea" },
+      { emoji: "😎", text: "아무것도 안 하면서\n쿨하게 쉬기", country: "france" },
+      { emoji: "☕", text: "카페에서 여유롭게\n독서·수다", country: "spain" },
+      { emoji: "❤️‍🔥", text: "가족·연인과\n격정적으로 시간 보내기", country: "argentina" }
+    ]
+  },
+  {
+    emoji: "🚨",
+    q: "갑자기 위기 상황이 닥치면?",
+    options: [
+      { emoji: "🕺", text: "리듬 타며 즉흥으로\n창의적 돌파!", country: "brazil" },
+      { emoji: "🧠", text: "냉정하게 분석하고\n체계적으로 대응", country: "germany" },
+      { emoji: "🔥", text: "절대 포기 없이\n끝까지 버팀", country: "korea" },
+      { emoji: "⚡", text: "천재적 직관 하나로\n단번에 해결", country: "france" },
+      { emoji: "🤝", text: "팀과 차분히 협력하며\n활로 찾기", country: "spain" },
+      { emoji: "😤", text: "극적인 감정과 함께\n벼랑 끝 역전극", country: "argentina" }
+    ]
+  },
+  {
+    emoji: "👥",
+    q: "팀 프로젝트에서 나의 역할은?",
+    options: [
+      { emoji: "🎨", text: "창의적 아이디어\n분위기 메이커", country: "brazil" },
+      { emoji: "📊", text: "계획서부터 마감까지\n전부 관리", country: "germany" },
+      { emoji: "🌙", text: "밤새 묵묵히 해내는\n실행가", country: "korea" },
+      { emoji: "💡", text: "아이디어 하나로\n팀 구원", country: "france" },
+      { emoji: "🔗", text: "모두 의견 조율하며\n완성도 높이기", country: "spain" },
+      { emoji: "🎭", text: "내 파트에 전 인류의\n감정을 쏟아붓기", country: "argentina" }
+    ]
+  },
+  {
+    emoji: "🎬",
+    q: "오늘 밤 영화 고른다면?",
+    options: [
+      { emoji: "💃", text: "화려한 뮤지컬·\n댄스 영화", country: "brazil" },
+      { emoji: "🚀", text: "탄탄한 SF·\n전쟁 전략물", country: "germany" },
+      { emoji: "🏆", text: "역경 극복\n스포츠 드라마", country: "korea" },
+      { emoji: "🎨", text: "감각적인\n아트하우스 영화", country: "france" },
+      { emoji: "🌊", text: "여유로운\n여행·힐링 다큐", country: "spain" },
+      { emoji: "😭", text: "막장이어도 좋아,\n감정 폭발 멜로", country: "argentina" }
+    ]
+  },
+  {
+    emoji: "💬",
+    q: "나의 삶의 방식은?",
+    options: [
+      { emoji: "🎵", text: "\"인생은 즐거워야 해,\n매 순간 축제처럼!\"", country: "brazil" },
+      { emoji: "⚙️", text: "\"계획 없이는 결과 없다.\n철저하게.\"", country: "germany" },
+      { emoji: "❤️", text: "\"포기란 없다.\n끝날 때까지 끝난 게 아니야.\"", country: "korea" },
+      { emoji: "👑", text: "\"나는 나야.\n굳이 설명 안 해도 알잖아.\"", country: "france" },
+      { emoji: "🍃", text: "\"급할 것 없어.\n흐름을 타면 다 돼.\"", country: "spain" },
+      { emoji: "🌋", text: "\"내 인생은 드라마야.\n매 순간이 결승전.\"", country: "argentina" }
+    ]
+  }
+];
+
+const results = {
+  brazil: {
+    flag: "🇧🇷", name: "브라질", nameEn: "Brazil",
+    title: "삼바처럼 살아가는 당신",
+    desc: "규칙보다 리듬, 전술보다 창의성. 어딜 가든 분위기가 살아나고, 비니시우스처럼 드리블하듯 인생을 즐깁니다. 결과보다 과정이 아름다워야 하는 타입. 당신 주변엔 항상 웃음이 넘쳐요. 지루함은 알아도 지루하게는 살지 않는 사람.",
+    style: "⚽ 화려한 개인기 + 즉흥 공격",
+    bg: "linear-gradient(135deg, #009c3b 0%, #006428 100%)",
+    badge: { bg: "#ffdf00", color: "#006428" }
+  },
+  germany: {
+    flag: "🇩🇪", name: "독일", nameEn: "Germany",
+    title: "효율의 신, 계획의 달인",
+    desc: "계획 없이는 한 발도 안 내딛는 당신. 독일 머신처럼 목표를 향해 정확하게, 빠짐없이. 감정보다 시스템을 믿고, 준비한 자만이 승리한다는 걸 아는 타입. 당신이 움직이면 일이 됩니다. 팀엔 반드시 당신 같은 사람이 필요해요.",
+    style: "⚽ 철저한 전술 + 조직적 압박",
+    bg: "linear-gradient(135deg, #2a2a2a 0%, #111 100%)",
+    badge: { bg: "#dd0000", color: "#fff" }
+  },
+  korea: {
+    flag: "🇰🇷", name: "대한민국", nameEn: "Korea",
+    title: "역전의 민족, 불굴의 투사",
+    desc: "끝날 때까지 끝난 게 아니야! 황인범·오현규처럼 후반에 빛나는 당신. 포기를 모르고 쓰러져도 다시 일어나는 투지파. 힘든 상황일수록 더 강해지는 불굴의 정신. 당신의 역전 스토리가 다른 사람들에게 가장 큰 감동을 줘요.",
+    style: "⚽ 끝없는 투지 + 극적 역전골",
+    bg: "linear-gradient(135deg, #c60c30 0%, #8b0020 100%)",
+    badge: { bg: "#003478", color: "#fff" }
+  },
+  france: {
+    flag: "🇫🇷", name: "프랑스", nameEn: "France",
+    title: "쿨한 천재, 설명이 필요 없는 존재",
+    desc: "음바페처럼 딱히 노력하는 것 같지도 않은데 결과는 항상 최고. 개성 강하고 남의 시선 신경 안 쓰는 쿨한 당신. 직관 하나로 상황을 바꾸는 천재형. 있는 그대로의 자신을 사랑하는 타입. 당신이 입장하는 순간 공기가 달라져요.",
+    style: "⚽ 천재적 개인기 + 폭발적 스피드",
+    bg: "linear-gradient(135deg, #002395 0%, #001560 100%)",
+    badge: { bg: "#ed2939", color: "#fff" }
+  },
+  spain: {
+    flag: "🇪🇸", name: "스페인", nameEn: "Spain",
+    title: "우아한 지략가, 티키타카 마에스트로",
+    desc: "티키타카처럼 급하지 않게, 우아하게. 과정을 중요시하는 지성파 당신. 패스 하나에도 의미를 담고, 결국엔 언제나 아름답게 이기는 타입. 공격보다 흐름, 속도보다 정확성. 당신과 함께하면 언제나 결과가 좋아요.",
+    style: "⚽ 패스 마스터 + 압도적 볼점유",
+    bg: "linear-gradient(135deg, #c60b1e 0%, #8b0010 100%)",
+    badge: { bg: "#f1bf00", color: "#8b0010" }
+  },
+  argentina: {
+    flag: "🇦🇷", name: "아르헨티나", nameEn: "Argentina",
+    title: "드라마 메이커, 열정의 화신",
+    desc: "당신의 인생은 드라마! 감정 기복이 크고 열정이 넘쳐 매 순간이 결승전 같아. 메시처럼 절정의 순간 역대급 퍼포먼스를 보여주는 뜨거운 타입. 당신 없으면 심심해요. 뭘 해도 드라마틱하게, 그게 당신의 매력.",
+    style: "⚽ 열정적 공격 + 극적 클러치",
+    bg: "linear-gradient(135deg, #74acdf 0%, #4a7faf 100%)",
+    badge: { bg: "#fff", color: "#4a7faf" }
+  }
+};
+
+let scores = { brazil:0, germany:0, korea:0, france:0, spain:0, argentina:0 };
+let currentQ = 0;
+
+function startQuiz() {
+  scores = { brazil:0, germany:0, korea:0, france:0, spain:0, argentina:0 };
+  currentQ = 0;
+  showScreen('quiz');
+  renderQuestion();
+}
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const pct = ((currentQ + 1) / questions.length) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = (currentQ+1) + ' / ' + questions.length;
+
+  const html = `
+    <div class="q-emoji">${q.emoji}</div>
+    <div class="q-text">${q.q}</div>
+    <div class="options-grid">
+      ${q.options.map((o, i) => `
+        <button class="opt-btn" onclick="selectOption('${o.country}', this)">
+          <span class="opt-emoji">${o.emoji}</span>
+          ${o.text.replace(/\n/g, '<br>')}
+        </button>
+      `).join('')}
+    </div>
+  `;
+  const card = document.getElementById('question-card');
+  card.style.animation = 'none';
+  card.offsetHeight; // reflow
+  card.style.animation = '';
+  card.innerHTML = html;
+}
+
+function selectOption(country, btn) {
+  // 선택 애니메이션
+  document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+  btn.classList.add('selected');
+  scores[country] += 1;
+
+  setTimeout(() => {
+    currentQ++;
+    if (currentQ < questions.length) {
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }, 380);
+}
+
+function showResult() {
+  const winner = Object.entries(scores).sort((a,b) => b[1]-a[1])[0][0];
+  const r = results[winner];
+
+  document.getElementById('result-card-wrap').innerHTML = `
+    <div class="result-card" style="background: ${r.bg}; color: #fff;">
+      <span class="result-flag">${r.flag}</span>
+      <div class="result-country-name">${r.name}</div>
+      <div class="result-title">"${r.title}"</div>
+      <div class="result-desc">${r.desc}</div>
+      <div class="result-style-badge" style="background:${r.badge.bg}; color:${r.badge.color}">
+        ${r.style}
+      </div>
+      <button class="btn-share btn-share-copy" onclick="shareResult('${winner}')">
+        🔗 결과 공유하기
+      </button>
+      <button class="btn-retry" onclick="startQuiz()">↩ 다시 하기</button>
+    </div>
+    <div style="text-align:center; margin-top:16px;">
+      <a href="index.html" style="color:#888; font-size:0.85rem;">← 블로그 목록으로</a>
+    </div>
+  `;
+  showScreen('result');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function shareResult(country) {
+  const r = results[country];
+  const shareText = `⚽ 나는 ${r.flag} ${r.name} 스타일!\n"${r.title}"\n${r.style}\n\n나의 2026 월드컵 축구 성향 테스트 👇\nhttps://www.dreamingblog.com/blog/quiz.html`;
+
+  if (navigator.share) {
+    navigator.share({ title: '나는 어느 나라 축구 스타일?', text: shareText })
+      .catch(() => copyToClipboard(shareText));
+  } else {
+    copyToClipboard(shareText);
+  }
+}
+
+function copyToClipboard(text) {
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(showToast);
+  } else {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    showToast();
+  }
+}
+
+function showToast() {
+  const t = document.getElementById('share-toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
