@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한국 32강 진출 확률 87.8% — 경우의 수 완전 분석 | WC2026 Hub</title>
+  <meta name="description" content="한국 2026 월드컵 32강 진출 경우의 수 완전 분석. 조 3위 와일드카드 비교 기준, 현재 순위, 남은 시나리오까지 한눈에 정리.">
+  <meta property="og:title" content="한국 32강 진출 확률 87.8% — 경우의 수 완전 분석 | WC2026 Hub">
+  <link rel="stylesheet" href="../css/style.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5553509544218511" crossorigin="anonymous"></script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYCX88DFYM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NYCX88DFYM');
+  </script>
+  <style>
+    .scenario-box {
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin: 16px 0;
+    }
+    .scenario-safe { background: #0d1f14; border-left: 4px solid #4caf50; }
+    .scenario-danger { background: #1f0d0d; border-left: 4px solid #e63946; }
+    .scenario-neutral { background: #1a1a2e; border-left: 4px solid #f4c842; }
+    .scenario-box h3 { margin: 0 0 10px; font-size: 0.95rem; }
+    .scenario-box p { margin: 0; font-size: 0.88rem; color: #ccc; line-height: 1.7; }
+
+    .third-place-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 0.88rem;
+    }
+    .third-place-table thead tr {
+      background: #1a1a2e;
+      color: #f4c842;
+    }
+    .third-place-table th, .third-place-table td {
+      padding: 9px 10px;
+      text-align: center;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .third-place-table td:first-child { text-align: left; }
+    .third-place-table tr.korea-row { background: #1a1400; }
+    .third-place-table tr.ahead { background: #0d180d; }
+    .third-place-table tr.unknown { color: #666; font-style: italic; }
+
+    .criteria-list {
+      background: #1a1a2e;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 16px 0;
+    }
+    .criteria-list ol {
+      margin: 0;
+      padding-left: 20px;
+      color: #ccc;
+      font-size: 0.9rem;
+      line-height: 2;
+    }
+    .criteria-list ol li strong { color: #f4c842; }
+
+    .prob-bar-wrap {
+      background: #1a1a2e;
+      border-radius: 14px;
+      padding: 20px;
+      margin: 16px 0;
+      text-align: center;
+    }
+    .prob-label { font-size: 0.8rem; color: #888; margin-bottom: 6px; }
+    .prob-number { font-size: 2.4rem; font-weight: 900; color: #f4c842; }
+    .prob-bar-bg { background: #0d0d1a; border-radius: 99px; height: 14px; margin: 10px 0 6px; overflow: hidden; }
+    .prob-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #4caf50, #f4c842); transition: width 1s ease; }
+    .prob-sub { font-size: 0.8rem; color: #888; }
+  </style>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">⚽ WC2026 Hub</a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">대시보드</a>
+      <a href="index.html" class="nav-link active">블로그</a>
+      <a href="../about.html" class="nav-link">소개</a>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="ad-slot ad-leaderboard">광고 영역 (728×90)</div>
+  <div class="article-layout">
+    <article class="article-main">
+      <div class="article-hero">
+        <div class="tag-row">
+          <span class="article-tag">대한민국</span>
+          <span class="article-tag">32강 분석</span>
+          <span class="article-tag">경우의 수</span>
+        </div>
+        <h1>한국 32강 진출 확률 87.8% — 경우의 수 완전 분석</h1>
+        <p class="sub-title">Korea's Round of 32 Qualification Scenarios — Full Analysis</p>
+        <div class="article-meta">
+          <span>📅 2026년 6월 26일</span>
+          <span>✍️ WC2026 Hub</span>
+        </div>
+      </div>
+
+      <div class="article-body">
+        <p>
+          남아공에 0-1로 패하며 A조 3위로 밀려난 한국. 하지만 아직 짐을 쌀 필요가 없다.
+          2026 월드컵은 역대 최초 48개국 체제로, <strong>조 3위 팀도 32강에 진출할 수 있다</strong>.
+          핵심은 단 하나 — 12개 조 3위 팀 중 상위 8개 팀 안에 드는 것이다.
+          이 기사에서 한국이 32강에 오를 수 있는 경우의 수를 모두 분석한다.
+        </p>
+
+        <div class="prob-bar-wrap">
+          <div class="prob-label">현재 한국 32강 진출 확률</div>
+          <div class="prob-number">87.8%</div>
+          <div class="prob-bar-bg">
+            <div class="prob-bar-fill" style="width: 87.8%"></div>
+          </div>
+          <div class="prob-sub">출처: 통계 시뮬레이션 기반 추산 (6월 25일 기준)</div>
+        </div>
+
+        <h2>① 왜 조 3위도 기회가 있나</h2>
+        <p>
+          기존 32개국 체제에서는 각 조 1·2위만 16강에 올랐다. 하지만 2026 대회는 참가국이
+          48개국으로 늘어나면서 <strong>12개 조, 각 조 4팀</strong> 구조로 바뀌었다.
+          여기서 조 3위 12개 팀을 그냥 탈락시키면 경기 수가 너무 줄기 때문에 —
+          FIFA는 그중 성적 상위 8팀에게 <strong>'와일드카드' 32강 진출권</strong>을 부여했다.
+        </p>
+        <p>
+          즉, 조 3위 12팀 중 <strong>8팀 진출, 4팀 탈락</strong>. 한국은 그 8팀 안에 들어야 한다.
+        </p>
+
+        <h2>② 한국의 현재 성적표</h2>
+        <table class="third-place-table">
+          <thead>
+            <tr>
+              <th>팀</th><th>경기</th><th>승</th><th>무</th><th>패</th>
+              <th>득</th><th>실</th><th>득실</th><th>승점</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="korea-row">
+              <td>🇰🇷 대한민국 (A조 3위)</td>
+              <td>3</td><td>1</td><td>0</td><td>2</td>
+              <td>2</td><td>3</td><td style="color:#e63946">-1</td>
+              <td style="color:#f4c842; font-weight:700">3</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          체코전 2-1 승리가 유일한 승점이다. 멕시코전 0-1, 남아공전 0-1로 두 경기 모두 득점 없이 졌다.
+          <strong>승점 3에 골득실 -1, 총 득점 2골</strong> — 이것이 한국의 '경쟁 카드'다.
+        </p>
+
+        <div class="ad-slot ad-inline">광고 영역 (본문 내 336×280)</div>
+
+        <h2>③ 조 3위 비교 기준 — 무엇이 순위를 가르나</h2>
+        <div class="criteria-list">
+          <ol>
+            <li><strong>승점</strong> — 가장 먼저 비교. 승점이 높을수록 유리</li>
+            <li><strong>골득실 (GD)</strong> — 승점이 같으면 골득실 비교</li>
+            <li><strong>총 득점</strong> — 골득실도 같으면 많이 넣은 팀이 앞선다</li>
+            <li><strong>페어플레이 점수</strong> — 경고·퇴장 등 징계 기록 (적을수록 유리)</li>
+            <li><strong>FIFA 랭킹</strong> — 위 항목 모두 동률이면 FIFA 랭킹으로 최종 결정</li>
+          </ol>
+        </div>
+        <p>
+          한국 입장에서 가장 중요한 수치는 <strong>골득실 -1</strong>이다.
+          같은 승점 3을 가진 팀이 GD 0 이상이면 한국보다 앞서고, GD -2 이하면 한국 뒤에 선다.
+        </p>
+
+        <h2>④ 완료된 3개 조 — 현재 상황</h2>
+        <p>
+          6월 26일 현재, A·B·C조 3차전이 완료됐다. 각 조 3위 팀의 성적을 비교하면 다음과 같다.
+        </p>
+        <table class="third-place-table">
+          <thead>
+            <tr>
+              <th>조</th><th>팀</th><th>승점</th><th>골득실</th><th>득점</th><th>한국 대비</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="ahead">
+              <td>B조</td>
+              <td>🇧🇦 보스니아</td>
+              <td style="font-weight:700">4</td>
+              <td>+</td><td>-</td>
+              <td style="color:#e63946; font-weight:700">한국 앞</td>
+            </tr>
+            <tr class="ahead">
+              <td>C조</td>
+              <td>🏴󠁧󠁢󠁳󠁣󠁴󠁿 스코틀랜드</td>
+              <td style="font-weight:700">3</td>
+              <td>0</td><td>-</td>
+              <td style="color:#e63946; font-weight:700">한국 앞 (GD)</td>
+            </tr>
+            <tr class="korea-row">
+              <td>A조</td>
+              <td>🇰🇷 대한민국</td>
+              <td style="font-weight:700">3</td>
+              <td>-1</td><td>2</td>
+              <td style="color:#f4c842; font-weight:700">기준</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          이미 <strong>보스니아(4pts)와 스코틀랜드(3pts, GD 0)가 한국보다 앞서</strong> 있다.
+          한국은 현재 완료된 조 기준으로 3위 팀 중 <strong>3번째</strong>다.
+          남은 9개 조에서 한국보다 좋은 팀이 5개 이상 더 나오면 한국은 9위 이하로 밀려 탈락한다.
+        </p>
+
+        <h2>⑤ 핵심 경우의 수</h2>
+
+        <div class="scenario-box scenario-safe">
+          <h3 style="color:#4caf50">✅ 한국 32강 진출 확정 조건</h3>
+          <p>
+            남은 9개 조(D~L) 3위 팀 중 <strong>4팀 이상이 한국보다 나쁜 성적</strong>을 거두면 된다.<br>
+            구체적으로는 → 승점 2 이하이거나, 승점 3이어도 골득실 -2 이하인 팀이 4팀 나오면 OK.<br>
+            역대 대회에서 조 3위 팀이 승점 3을 넘기 어려운 경우가 많아, 이 조건은 어렵지 않은 편이다.
+          </p>
+        </div>
+
+        <div class="scenario-box scenario-danger">
+          <h3 style="color:#e63946">❌ 한국 탈락 시나리오</h3>
+          <p>
+            남은 9개 조 중 <strong>6팀 이상이 한국보다 좋은 성적</strong>을 거두는 경우.<br>
+            즉, 보스니아·스코틀랜드 포함 총 8팀 이상이 한국 앞에 서면 한국은 9위 이하로 탈락.<br>
+            9개 조에서 6팀이 모두 승점 3 이상에 골득실 0 이상을 기록해야 하는 시나리오로, 가능성은 낮다.
+          </p>
+        </div>
+
+        <div class="scenario-box scenario-neutral">
+          <h3 style="color:#f4c842">⚠️ 한국 결과 확정 시점</h3>
+          <p>
+            D~L조의 3차전이 <strong>6월 26~28일</strong> 순차적으로 진행된다.
+            각 조 결과가 나올 때마다 한국의 순위가 바뀐다.
+            모든 12개 조가 완료되는 <strong>6월 28일 전후</strong>에 최종 32강 진출 여부가 확정된다.
+          </p>
+        </div>
+
+        <h2>⑥ 승점 3에서 한국의 골득실 -1은 약한가?</h2>
+        <p>
+          3경기에서 1승 2패를 기록하는 팀의 골득실은 평균적으로 -2~-3 수준이다.
+          체코전 2-1 승리에서 1골을 벌었지만, 멕시코·남아공전에서 각 1골씩 내줬다.
+          <strong>골득실 -1은 승점 3 팀 중에서는 상위권</strong>에 해당한다.
+          이 때문에 87.8%라는 높은 진출 확률이 나오는 것이다.
+        </p>
+        <p>
+          비교군이 될 만한 상황: 조 3위 팀이 <strong>승점 3 + GD -1 이하</strong>면 한국과 비슷하거나 아래다.
+          반대로 3위 팀이 무승부를 섞어 <strong>승점 4(1승 1무 1패)</strong>를 얻는다면 자동으로 한국 앞이다.
+        </p>
+
+        <div class="ad-slot ad-inline">광고 영역 (본문 내 336×280)</div>
+
+        <h2>⑦ 32강 진출 시 예상 상대는?</h2>
+        <p>
+          조 3위 와일드카드로 진출하면, 32강 대진은 어느 조의 3위로 올라가느냐에 따라 달라진다.
+          FIFA 대진 규정에 따르면 한국(A조 3위)이 진출할 경우 <strong>독일(C조 1위 예상) 또는
+          이집트·벨기에(다른 조 1·2위)</strong> 등과 맞붙을 가능성이 거론된다.
+          어떤 팀을 만나더라도 토너먼트인 만큼 — 한 번의 패배가 곧 귀국이다.
+        </p>
+
+        <div style="background:#1a1a2e; border-left:4px solid #f4c842; padding:16px 20px; border-radius:8px; margin:24px 0;">
+          <p style="color:#f4c842; font-weight:700; margin-bottom:8px;">📌 요약 — 한국 32강 진출을 위한 조건</p>
+          <ul style="color:#ccc; font-size:0.9rem; line-height:1.9; margin:0; padding-left:20px;">
+            <li>현재 성적: <strong>승점 3 / 골득실 -1 / 득점 2</strong></li>
+            <li>현재 3위 팀 순위: 보스니아(4pts) → 스코틀랜드(3pts, GD 0) → <strong>한국 3위</strong></li>
+            <li>남은 9개 조(D~L) 3위 팀 중 <strong>최소 4팀이 한국보다 나빠야</strong> 진출 확정</li>
+            <li>32강 진출 확률: <strong>약 87.8%</strong></li>
+            <li>최종 결과 확정: <strong>6월 28일 전후</strong></li>
+          </ul>
+        </div>
+
+        <hr style="border-color:#2a2a4a; margin:32px 0;">
+
+        <div class="english-summary">
+          <h2>English Summary</h2>
+          <p>
+            South Korea finished 3rd in Group A (1W-0D-2L, 3 pts, GD -1) after losing 0-1 to South Africa.
+            Under the expanded 48-team format of the 2026 World Cup, the best 8 of 12 third-placed teams
+            advance to the Round of 32, giving Korea a lifeline.
+          </p>
+          <p>
+            <strong>Current third-place standings (Groups A–C completed):</strong>
+            Bosnia (4pts) leads, Scotland (3pts, GD 0) is second, and Korea (3pts, GD -1) is currently third
+            among the three finished groups. Nine groups (D–L) are yet to complete their final matchdays.
+          </p>
+          <p>
+            <strong>Korea's path:</strong> They need at most 5 of the remaining 9 third-place teams to
+            beat their record (3pts, GD -1). If 6 or more exceed it, Korea are eliminated. Statistical
+            models put Korea's qualification probability at approximately <strong>87.8%</strong>, reflecting
+            that a GD of -1 is above average for a third-place finisher.
+          </p>
+          <p>
+            All group stage matches conclude by <strong>June 28</strong>, when Korea's fate will be decided.
+          </p>
+        </div>
+
+        <div style="margin-top:32px; padding-top:20px; border-top:1px solid #2a2a4a;">
+          <p style="color:#888; font-size:0.85rem;">관련 기사</p>
+          <a href="korea-rsa-0-1-analysis.html" style="display:block; color:#f4c842; font-size:0.9rem; margin-bottom:8px;">→ 한국 0-1 남아공: 경기 분석</a>
+          <a href="korea-mexico-0-1-analysis.html" style="display:block; color:#f4c842; font-size:0.9rem; margin-bottom:8px;">→ 한국 0-1 멕시코 분석</a>
+          <a href="korea-analysis.html" style="display:block; color:#f4c842; font-size:0.9rem;">→ 한국 2-1 체코 역전승 분석</a>
+        </div>
+      </div>
+    </article>
+
+    <aside class="article-sidebar">
+      <div class="ad-slot ad-rectangle">광고 영역 (300×250)</div>
+    </aside>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>© 2026 WC2026 Hub — 비공식 팬 사이트 · FIFA와 무관 &nbsp;|&nbsp;
+    <a href="../privacy.html">개인정보처리방침</a> &nbsp;|&nbsp;
+    <a href="../about.html">소개</a>
+  </p>
+</footer>
+</body>
+</html>
