@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 | WC2026 Hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #0d0d1a; color: #fff; min-height: 100vh; }
+
+    /* ── 공통 ── */
+    .screen { display: none; max-width: 780px; margin: 0 auto; padding: 32px 20px 60px; }
+    .screen.active { display: block; }
+    .logo { color: #f4c842; font-size: 1.4rem; font-weight: 900; text-decoration: none; display: block; text-align: center; margin-bottom: 6px; }
+    h1 { color: #f4c842; text-align: center; margin: 0 0 28px; font-size: 1.5rem; }
+    h2 { color: #f4c842; font-size: 1.1rem; margin: 0 0 16px; }
+    p.hint { color: #888; font-size: 0.84rem; text-align: center; line-height: 1.7; margin: 0 0 24px; }
+    .card { background: #1a1a2e; border: 1.5px solid #2a2a4a; border-radius: 16px; padding: 24px; margin-bottom: 16px; }
+
+    /* ── 입력 ── */
+    input[type=text], input[type=password], input[type=date], textarea, select {
+      width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #2a2a4a;
+      background: #0d0d1a; color: #fff; font-size: 0.92rem; outline: none;
+      transition: border-color .2s; font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus { border-color: #f4c842; }
+    textarea { resize: vertical; }
+    label { font-size: 0.82rem; color: #888; display: block; margin-bottom: 5px; margin-top: 12px; }
+
+    /* ── 버튼 ── */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 11px 22px;
+           border-radius: 50px; font-size: 0.88rem; font-weight: 700; cursor: pointer; border: none;
+           transition: all .18s; }
+    .btn:hover { transform: scale(1.03); }
+    .btn-gold  { background: #f4c842; color: #0d0d1a; }
+    .btn-red   { background: #e63946; color: #fff; }
+    .btn-ghost { background: transparent; border: 1.5px solid #555; color: #aaa; }
+    .btn-ghost:hover { border-color: #f4c842; color: #f4c842; }
+    .btn-row   { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .btn-full  { width: 100%; }
+
+    /* ── 로그인 화면 ── */
+    #screen-login { padding-top: 80px; max-width: 360px; }
+    #screen-login .pw-input { font-size: 1.3rem; letter-spacing: 6px; text-align: center; }
+
+    /* ── 토큰 화면 ── */
+    #screen-token { max-width: 520px; }
+    .token-steps { counter-reset: step; list-style: none; padding: 0; margin: 0 0 20px; }
+    .token-steps li { counter-increment: step; padding: 8px 0 8px 36px; position: relative; color: #ccc; font-size: 0.88rem; border-bottom: 1px solid #2a2a4a; }
+    .token-steps li::before { content: counter(step); position: absolute; left: 0; top: 8px; background: #f4c842; color: #0d0d1a; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; }
+    .token-steps li strong { color: #f4c842; }
+
+    /* ── 기사 목록 ── */
+    .article-item { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px 0; border-bottom: 1px solid #2a2a4a; }
+    .article-item:last-child { border-bottom: none; }
+    .article-item-info { flex: 1; min-width: 0; }
+    .article-item-title { font-size: 0.9rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .article-item-meta  { font-size: 0.78rem; color: #666; margin-top: 3px; }
+    .article-item-btns  { display: flex; gap: 6px; flex-shrink: 0; }
+    .btn-sm { padding: 6px 13px; font-size: 0.78rem; }
+
+    /* ── 편집기 ── */
+    #editor-textarea { font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.5;
+                       min-height: 520px; color: #ccc; background: #0a0a14; }
+    .editor-path { font-size: 0.8rem; color: #666; background: #111; padding: 8px 12px;
+                   border-radius: 8px; margin-bottom: 10px; word-break: break-all; }
+
+    /* ── 새 글 작성 ── */
+    .tag-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .tag-chip  { padding: 4px 12px; border-radius: 20px; background: #f4c842; color: #0d0d1a;
+                 font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+    .tag-chip:hover { opacity: .75; }
+    #new-body { min-height: 300px; font-size: 0.88rem; }
+
+    /* ── 삭제 확인 ── */
+    #screen-delete { max-width: 480px; padding-top: 80px; }
+    .delete-filename { color: #e63946; font-size: 0.9rem; background: #1f0d0d; border-radius: 8px;
+                       padding: 10px 14px; margin: 12px 0 24px; word-break: break-all; }
+
+    /* ── 알림 토스트 ── */
+    #toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(80px);
+             background: #f4c842; color: #0d0d1a; padding: 12px 26px; border-radius: 50px;
+             font-weight: 700; font-size: 0.9rem; opacity: 0; transition: all .3s; z-index: 999; white-space: nowrap; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.err  { background: #e63946; color: #fff; }
+
+    /* ── 로딩 ── */
+    .loading { text-align: center; color: #555; padding: 40px; }
+    .spinner { display: inline-block; width: 28px; height: 28px; border: 3px solid #333;
+               border-top-color: #f4c842; border-radius: 50%; animation: spin .8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 500px) {
+      .article-item { flex-direction: column; }
+      .article-item-title { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── 로그인 화면 ───────────────────────────────────────── -->
+<div id="screen-login" class="screen active">
+  <a href="index.html" class="logo">⚽ WC2026 Hub</a>
+  <h1>🔐 관리자 로그인</h1>
+  <p class="hint">관리자 비밀번호를 입력해주세요.</p>
+  <input type="password" id="login-pw" class="pw-input" placeholder="●●●" maxlength="30" autocomplete="off">
+  <div class="btn-row" style="margin-top:14px;">
+    <button class="btn btn-gold btn-full" onclick="doLogin()">로그인</button>
+  </div>
+  <p class="hint" style="margin-top:14px; font-size:0.78rem;">
+    <a href="index.html" style="color:#555;">← 사이트로 돌아가기</a>
+  </p>
+</div>
+
+<!-- ── GitHub 토큰 설정 ──────────────────────────────────── -->
+<div id="screen-token" class="screen">
+  <a href="index.html" class="logo">⚽ WC2026 Hub</a>
+  <h1>🔗 GitHub 연결</h1>
+  <p class="hint">파일 저장/삭제를 위해 GitHub Personal Access Token이 필요합니다.<br>
+     토큰은 브라우저 세션에만 저장되며 탭을 닫으면 사라집니다.</p>
+
+  <div class="card">
+    <h2>토큰 발급 방법</h2>
+    <ol class="token-steps">
+      <li>GitHub 로그인 → 우측 상단 프로필 → <strong>Settings</strong></li>
+      <li>좌측 맨 아래 <strong>Developer settings</strong> 클릭</li>
+      <li><strong>Personal access tokens → Tokens (classic)</strong></li>
+      <li><strong>Generate new token (classic)</strong> 클릭</li>
+      <li>Note에 아무 이름, Expiration: <strong>No expiration</strong>, <strong>repo</strong> 체크</li>
+      <li>맨 아래 <strong>Generate token</strong> → 토큰 복사</li>
+    </ol>
+    <label>GitHub Personal Access Token</label>
+    <input type="text" id="gh-token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="saveToken()">연결하기</button>
+      <button class="btn btn-ghost" onclick="showList()">건너뛰기 (읽기 전용)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 기사 목록 ─────────────────────────────────────────── -->
+<div id="screen-list" class="screen">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:10px;">
+    <h1 style="margin:0; text-align:left;">📋 기사 관리</h1>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-gold btn-sm" onclick="showNew()">+ 새 글 작성</button>
+      <button class="btn btn-ghost btn-sm" onclick="showToken()">⚙️ 토큰 설정</button>
+    </div>
+  </div>
+  <div id="article-list-wrap" class="card">
+    <div class="loading"><div class="spinner"></div><p>기사 목록 불러오는 중…</p></div>
+  </div>
+</div>
+
+<!-- ── 편집기 ─────────────────────────────────────────────── -->
+<div id="screen-edit" class="screen">
+  <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+    <button class="btn btn-ghost btn-sm" onclick="showList()">← 목록으로</button>
+    <h1 style="margin:0; text-align:left; flex:1;">✏️ 글 수정</h1>
+  </div>
+  <div class="editor-path" id="edit-path"></div>
+  <textarea id="editor-textarea" placeholder="파일 내용 불러오는 중…"></textarea>
+  <div class="btn-row">
+    <button class="btn btn-gold" onclick="saveEdit()">💾 저장 (GitHub 배포)</button>
+    <button class="btn btn-ghost" onclick="showList()">취소</button>
+  </div>
+  <p class="hint" style="margin-top:12px; font-size:0.78rem;">저장 시 GitHub에 커밋되며 약 30초~1분 후 사이트에 반영됩니다.</p>
+</div>
+
+<!-- ── 새 글 작성 ────────────────────────────────────────── -->
+<div id="screen-new" class="screen">
+  <div style="display:flex; align-items:center; gap:10px; margin-bottom:20px; flex-wrap:wrap;">
+    <button class="btn btn-ghost btn-sm" onclick="showList()">← 목록으로</button>
+    <h1 style="margin:0; text-align:left; flex:1;">📝 새 글 작성</h1>
+  </div>
+  <div class="card">
+    <label>제목 (한국어)</label>
+    <input type="text" id="new-title" placeholder="예: 한국 2-1 독일 역전승 분석" oninput="autoFilename()">
+
+    <label>영문 부제목</label>
+    <input type="text" id="new-subtitle" placeholder="e.g. Korea 2–1 Germany — Match Analysis">
+
+    <label>파일명 (영문 소문자·하이픈)</label>
+    <input type="text" id="new-filename" placeholder="예: korea-vs-germany-analysis">
+    <p style="font-size:0.76rem; color:#555; margin:4px 0 0;">자동 생성됩니다. 직접 수정도 가능해요.</p>
+
+    <label>날짜</label>
+    <input type="date" id="new-date">
+
+    <label>태그 (클릭해서 추가)</label>
+    <div class="tag-chips">
+      <span class="tag-chip" onclick="addTag(this)">경기 분석</span>
+      <span class="tag-chip" onclick="addTag(this)">대한민국</span>
+      <span class="tag-chip" onclick="addTag(this)">그룹 분석</span>
+      <span class="tag-chip" onclick="addTag(this)">선수 분석</span>
+      <span class="tag-chip" onclick="addTag(this)">골든부트</span>
+      <span class="tag-chip" onclick="addTag(this)">이변</span>
+      <span class="tag-chip" onclick="addTag(this)">총정리</span>
+      <span class="tag-chip" onclick="addTag(this)">32강 분석</span>
+    </div>
+    <input type="text" id="new-tags" placeholder="태그1, 태그2 (직접 입력도 가능)" style="margin-top:8px;">
+
+    <label>블로그 목록용 요약 (2~3줄)</label>
+    <textarea id="new-summary" rows="3" placeholder="블로그 카드에 표시될 짧은 요약입니다."></textarea>
+
+    <label>본문 내용 (HTML 가능)</label>
+    <textarea id="new-body" placeholder="&lt;h2&gt;소제목&lt;/h2&gt;&#10;&lt;p&gt;내용…&lt;/p&gt;&#10;&#10;HTML 태그를 사용하거나 일반 텍스트로 작성하세요."></textarea>
+
+    <div class="btn-row">
+      <button class="btn btn-gold" onclick="saveNew()">💾 저장 (GitHub 배포)</button>
+      <button class="btn btn-ghost" onclick="showList()">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── 삭제 확인 ─────────────────────────────────────────── -->
+<div id="screen-delete" class="screen">
+  <a href="index.html" class="logo" style="margin-bottom:30px;">⚽ WC2026 Hub</a>
+  <div class="card" style="text-align:center;">
+    <h1 style="color:#e63946;">🗑️ 글 삭제</h1>
+    <p style="color:#ccc;">아래 파일을 삭제하시겠습니까?<br>블로그 목록과 사이트맵에서도 함께 제거됩니다.</p>
+    <div class="delete-filename" id="delete-path"></div>
+    <div class="btn-row" style="justify-content:center;">
+      <button class="btn btn-red" onclick="confirmDelete()">삭제 확정</button>
+      <button class="btn btn-ghost" onclick="showList()">취소</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── 설정 ─────────────────────────────────────────────────
+const REPO   = 'jjung-sketch/dreamingblog';
+const BRANCH = 'main';
+const ADMIN_PW = '123';
+
+// ── GitHub API ───────────────────────────────────────────
+function token() { return sessionStorage.getItem('gh_token') || ''; }
+
+async function ghGet(path) {
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${BRANCH}&t=${Date.now()}`, {
+    headers: { Authorization: `token ${token()}`, Accept: 'application/vnd.github.v3+json' }
+  });
+  if (!r.ok) throw new Error(`GitHub API ${r.status}: ${path}`);
+  return r.json();
+}
+
+async function ghPut(path, content, sha, message) {
+  const body = { message, content: toB64(content), branch: BRANCH };
+  if (sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { Authorization: `token ${token()}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github.v3+json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message || `API error ${r.status}`); }
+  return r.json();
+}
+
+async function ghDelete(path, sha, message) {
+  const r = await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`, {
+    method: 'DELETE',
+    headers: { Authorization: `token ${token()}`, 'Content-Type': 'application/json', Accept: 'application/vnd.github.v3+json' },
+    body: JSON.stringify({ message, sha, branch: BRANCH })
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message || `API error ${r.status}`); }
+}
+
+// UTF-8 안전 Base64
+function toB64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin);
+}
+function fromB64(b64) {
+  const bin = atob(b64.replace(/\s/g, ''));
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+
+// ── 화면 전환 ─────────────────────────────────────────────
+let currentDeleteFile = null;
+let currentEditSha    = null;
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function showLogin()  { showScreen('screen-login'); }
+function showToken()  { showScreen('screen-token'); }
+function showNew()    {
+  document.getElementById('new-date').valueAsDate = new Date();
+  showScreen('screen-new');
+}
+async function showList() {
+  showScreen('screen-list');
+  await loadArticles();
+}
+
+// ── 로그인 ───────────────────────────────────────────────
+document.getElementById('login-pw').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+function doLogin() {
+  const pw = document.getElementById('login-pw').value;
+  if (pw === ADMIN_PW) {
+    sessionStorage.setItem('adm_auth', '1');
+    document.getElementById('login-pw').value = '';
+    if (!token()) showToken(); else showList();
+  } else {
+    const el = document.getElementById('login-pw');
+    el.style.borderColor = '#e63946';
+    el.value = '';
+    setTimeout(() => el.style.borderColor = '#2a2a4a', 1200);
+    showToast('비밀번호가 틀렸습니다.', true);
+  }
+}
+
+function saveToken() {
+  const t = document.getElementById('gh-token-input').value.trim();
+  if (!t) { showToast('토큰을 입력해주세요.', true); return; }
+  sessionStorage.setItem('gh_token', t);
+  document.getElementById('gh-token-input').value = '';
+  showToast('GitHub 연결 완료!');
+  showList();
+}
+
+// ── 기사 목록 ─────────────────────────────────────────────
+async function loadArticles() {
+  const wrap = document.getElementById('article-list-wrap');
+  wrap.innerHTML = '<div class="loading"><div class="spinner"></div><p>불러오는 중…</p></div>';
+  try {
+    const data = await ghGet('blog/index.html');
+    const html = fromB64(data.content);
+    const articles = parseArticleList(html);
+    if (articles.length === 0) {
+      wrap.innerHTML = '<p style="color:#666; text-align:center; padding:20px;">기사를 찾을 수 없습니다.</p>';
+      return;
+    }
+    wrap.innerHTML = articles.map(a => `
+      <div class="article-item">
+        <div class="article-item-info">
+          <div class="article-item-title">${escHtml(a.title)}</div>
+          <div class="article-item-meta">${a.file} · ${a.date}</div>
+        </div>
+        <div class="article-item-btns">
+          <button class="btn btn-gold btn-sm" onclick="openEdit('${escAttr(a.file)}')">✏️ 수정</button>
+          <button class="btn btn-red  btn-sm" onclick="openDelete('${escAttr(a.file)}')">🗑️</button>
+        </div>
+      </div>`).join('');
+  } catch (e) {
+    wrap.innerHTML = `<p style="color:#e63946; padding:20px;">${escHtml(e.message)}<br><small>GitHub 토큰을 확인해주세요.</small></p>`;
+  }
+}
+
+function parseArticleList(html) {
+  const results = [];
+  const re = /<a\s+href="([^"]+\.html)"[^>]*class="[^"]*article-card[^"]*"[^>]*>([\s\S]*?)<\/a>/g;
+  let m;
+  while ((m = re.exec(html)) !== null) {
+    const href = m[1], inner = m[2];
+    const titleM = /<h2[^>]*>([\s\S]*?)<\/h2>/i.exec(inner);
+    const dateM  = /class="article-date"[^>]*>([\s\S]*?)<\/span>/i.exec(inner);
+    if (titleM) results.push({
+      file:  'blog/' + href,
+      href,
+      title: titleM[1].replace(/<[^>]+>/g, '').trim(),
+      date:  dateM ? dateM[1].trim() : ''
+    });
+  }
+  return results;
+}
+
+// ── 수정 ─────────────────────────────────────────────────
+async function openEdit(file) {
+  showScreen('screen-edit');
+  document.getElementById('edit-path').textContent = file;
+  const ta = document.getElementById('editor-textarea');
+  ta.value = '불러오는 중…';
+  try {
+    const data = await ghGet(file);
+    currentEditSha = data.sha;
+    ta.value = fromB64(data.content);
+  } catch (e) {
+    ta.value = '';
+    showToast(e.message, true);
+  }
+}
+
+async function saveEdit() {
+  if (!token()) { showToast('GitHub 토큰이 없습니다. 토큰 설정 후 다시 시도하세요.', true); showToken(); return; }
+  const file    = document.getElementById('edit-path').textContent.trim();
+  const content = document.getElementById('editor-textarea').value;
+  try {
+    await ghPut(file, content, currentEditSha, `Update ${file} via admin panel`);
+    showToast('저장 완료! 약 1분 후 사이트에 반영됩니다.');
+    currentEditSha = null;
+    showList();
+  } catch (e) {
+    showToast(e.message, true);
+  }
+}
+
+// ── 삭제 ─────────────────────────────────────────────────
+function openDelete(file) {
+  currentDeleteFile = file;
+  document.getElementById('delete-path').textContent = file;
+  showScreen('screen-delete');
+}
+
+async function confirmDelete() {
+  if (!token()) { showToast('GitHub 토큰이 없습니다.', true); showToken(); return; }
+  const file = currentDeleteFile;
+  if (!file) return;
+  try {
+    // 1) 파일 삭제
+    const data = await ghGet(file);
+    await ghDelete(file, data.sha, `Delete ${file} via admin panel`);
+
+    // 2) blog/index.html 에서 카드 제거
+    const href = file.replace('blog/', '');
+    await removeFromIndex(href);
+
+    // 3) sitemap.xml 에서 URL 제거
+    await removeFromSitemap(href);
+
+    showToast('삭제 완료!');
+    currentDeleteFile = null;
+    showList();
+  } catch (e) {
+    showToast(e.message, true);
+  }
+}
+
+async function removeFromIndex(href) {
+  const data = await ghGet('blog/index.html');
+  let html = fromB64(data.content);
+  const escapedHref = href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(
+    `\\s*<a\\s[^>]*href="${escapedHref}"[^>]*class="[^"]*article-card[^"]*"[^>]*>[\\s\\S]*?<\\/a>`, 'g'
+  );
+  html = html.replace(re, '');
+  await ghPut('blog/index.html', html, data.sha, `Remove ${href} from blog index`);
+}
+
+async function removeFromSitemap(href) {
+  try {
+    const data = await ghGet('sitemap.xml');
+    let xml = fromB64(data.content);
+    const escaped = href.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(`\\s*<url>[\\s\\S]*?blog\\/${escaped}[\\s\\S]*?<\\/url>`, 'g');
+    xml = xml.replace(re, '');
+    await ghPut('sitemap.xml', xml, data.sha, `Remove ${href} from sitemap`);
+  } catch {}
+}
+
+// ── 새 글 작성 ───────────────────────────────────────────
+function autoFilename() {
+  const title = document.getElementById('new-title').value;
+  const slug = title
+    .toLowerCase()
+    .replace(/[가-힣]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .substring(0, 50);
+  if (slug) document.getElementById('new-filename').value = slug;
+}
+
+function addTag(el) {
+  const cur = document.getElementById('new-tags').value;
+  const tag = el.textContent.trim();
+  document.getElementById('new-tags').value = cur ? cur + ', ' + tag : tag;
+}
+
+async function saveNew() {
+  if (!token()) { showToast('GitHub 토큰이 없습니다.', true); showToken(); return; }
+
+  const title    = document.getElementById('new-title').value.trim();
+  const subtitle = document.getElementById('new-subtitle').value.trim();
+  const filename = document.getElementById('new-filename').value.trim().replace(/\.html$/, '') + '.html';
+  const date     = document.getElementById('new-date').value;
+  const tags     = document.getElementById('new-tags').value.split(',').map(t => t.trim()).filter(Boolean);
+  const summary  = document.getElementById('new-summary').value.trim();
+  const body     = document.getElementById('new-body').value.trim();
+
+  if (!title || !filename || !date || !body) {
+    showToast('제목, 파일명, 날짜, 본문은 필수입니다.', true); return;
+  }
+
+  const filePath = 'blog/' + filename;
+  const dateKO   = new Date(date).toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+  const tagsHtml = tags.map(t => `<span class="article-tag">${escHtml(t)}</span>`).join('\n          ');
+
+  const articleHtml = `<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${escHtml(title)} | WC2026 Hub</title>
+  <meta name="description" content="${escHtml(summary || title)}">
+  <meta property="og:title" content="${escHtml(title)} | WC2026 Hub">
+  <link rel="stylesheet" href="../css/style.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5553509544218511" crossorigin="anonymous"><\/script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYCX88DFYM"><\/script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NYCX88DFYM');
+  <\/script>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">⚽ WC2026 Hub</a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">대시보드</a>
+      <a href="index.html" class="nav-link active">블로그</a>
+      <a href="../about.html" class="nav-link">소개</a>
+    </div>
+  </div>
+</nav>
+<div class="page-wrap">
+  <div class="ad-slot ad-leaderboard">광고 영역 (728×90)</div>
+  <div class="article-layout">
+    <article class="article-main">
+      <div class="article-hero">
+        <div class="tag-row">
+          ${tagsHtml}
+        </div>
+        <h1>${escHtml(title)}</h1>
+        <p class="sub-title">${escHtml(subtitle)}</p>
+        <div class="article-meta">
+          <span>📅 ${dateKO}</span>
+          <span>✍️ WC2026 Hub</span>
+        </div>
+      </div>
+      <div class="article-body">
+        <div class="ad-slot ad-inline">광고 영역 (본문 내 336×280)</div>
+
+${body}
+
+        <hr style="border-color:#2a2a4a; margin:32px 0;">
+        <div class="english-summary">
+          <h2>English Summary</h2>
+          <p>(영문 요약을 여기에 추가하세요.)</p>
+        </div>
+      </div>
+    </article>
+    <aside class="article-sidebar">
+      <div class="ad-slot ad-rectangle">광고 영역 (300×250)</div>
+    </aside>
+  </div>
+</div>
+<footer class="site-footer">
+  <p>© 2026 WC2026 Hub — 비공식 팬 사이트 · FIFA와 무관 &nbsp;|&nbsp;
+    <a href="../privacy.html">개인정보처리방침</a> &nbsp;|&nbsp;
+    <a href="../about.html">소개</a>
+  </p>
+</footer>
+<script src="../js/admin-btn.js"><\/script>
+</body>
+</html>`;
+
+  try {
+    // 1) 새 파일 저장
+    await ghPut(filePath, articleHtml, null, `Add article: ${filename}`);
+
+    // 2) blog/index.html 맨 앞에 카드 추가
+    await addToIndex(filename, title, subtitle, summary, dateKO, tags[0] || '기사');
+
+    // 3) sitemap.xml 에 URL 추가
+    await addToSitemap(filename, date);
+
+    showToast('게시 완료! 약 1분 후 사이트에 반영됩니다.');
+
+    // 폼 초기화
+    ['new-title','new-subtitle','new-filename','new-tags','new-summary','new-body'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+    showList();
+  } catch (e) {
+    showToast(e.message, true);
+  }
+}
+
+async function addToIndex(filename, title, subtitle, summary, dateKO, tag) {
+  const data = await ghGet('blog/index.html');
+  let html = fromB64(data.content);
+  const card = `
+    <a href="${filename}" class="article-card">
+      <span class="article-tag">${escHtml(tag)}</span>
+      <h2>${escHtml(title)}</h2>
+      <p class="sub">${escHtml(subtitle)}</p>
+      <p>${escHtml(summary)}</p>
+      <span class="article-date">${dateKO}</span>
+    </a>\n`;
+  html = html.replace('<div class="article-grid">', '<div class="article-grid">' + card);
+  await ghPut('blog/index.html', html, data.sha, `Add ${filename} to blog index`);
+}
+
+async function addToSitemap(filename, date) {
+  try {
+    const data = await ghGet('sitemap.xml');
+    let xml = fromB64(data.content);
+    const entry = `  <url>
+    <loc>https://www.dreamingblog.com/blog/${filename}</loc>
+    <lastmod>${date}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>\n`;
+    xml = xml.replace('  <!-- 블로그 기사 -->', '  <!-- 블로그 기사 -->\n' + entry);
+    await ghPut('sitemap.xml', xml, data.sha, `Add ${filename} to sitemap`);
+  } catch {}
+}
+
+// ── 유틸 ─────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(s) { return String(s).replace(/'/g, "\\'"); }
+
+function showToast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = isErr ? '❌ ' + msg : '✅ ' + msg;
+  t.className = 'show' + (isErr ? ' err' : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = '', 3200);
+}
+
+// ── 초기화 ───────────────────────────────────────────────
+(function init() {
+  const params = new URLSearchParams(location.search);
+  const mode   = params.get('mode');
+  const file   = params.get('file');
+
+  // 로그인 여부 확인
+  if (sessionStorage.getItem('adm_auth') !== '1') { showLogin(); return; }
+
+  if (mode === 'edit' && file) {
+    if (!token()) { showToken(); return; }
+    openEdit(decodeURIComponent(file));
+  } else if (mode === 'delete' && file) {
+    if (!token()) { showToken(); return; }
+    openDelete(decodeURIComponent(file));
+  } else {
+    if (!token()) { showToken(); return; }
+    showList();
+  }
+})();
+</script>
+</body>
+</html>
