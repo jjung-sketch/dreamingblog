@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>토너먼트 대진표 | WC2026 Hub</title>
+  <meta name="description" content="2026 FIFA 월드컵 토너먼트 대진표 — 32강부터 결승까지 전체 경기 결과를 한눈에.">
+  <link rel="stylesheet" href="css/style.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5553509544218511" crossorigin="anonymous"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NYCX88DFYM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-NYCX88DFYM');
+  </script>
+  <style>
+    :root { --slot: 74px; --gold: #f4c842; --red: #e63946; --card: #141428; --border: #252545; }
+
+    .bk-wrap   { overflow-x: auto; padding: 0 12px 60px; }
+    .bk-header { text-align: center; padding: 28px 16px 8px; }
+    .bk-header h1 { color: var(--gold); font-size: 1.7rem; margin: 0 0 6px; }
+    .bk-header p  { color: #888; font-size: 0.85rem; margin: 0; }
+
+    /* ── bracket layout ──────────────────────────────────── */
+    .bracket { display: flex; align-items: flex-start; min-width: 1060px; margin: 0 auto; max-width: 1400px; }
+
+    .col { display: flex; flex-direction: column; flex: 1; }
+    .col.col-final { flex: 1.4; display: flex; flex-direction: column; align-items: center; }
+
+    .col-label {
+      text-align: center; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #555; padding: 0 0 8px; height: 24px;
+    }
+    .col-final .col-label { color: var(--gold); }
+
+    /* slots — enforce alignment by round */
+    .slot { display: flex; align-items: center; padding: 0 4px; position: relative; }
+    .col-r32 .slot { height: calc(var(--slot) * 1); }
+    .col-r16 .slot { height: calc(var(--slot) * 2); }
+    .col-qf  .slot { height: calc(var(--slot) * 4); }
+    .col-sf  .slot { height: calc(var(--slot) * 8); }
+
+    /* connector lines — right side of left-half, left side of right-half */
+    .col-r32.side-l .slot::after,
+    .col-r16.side-l .slot::after,
+    .col-qf.side-l  .slot::after { content: ''; position: absolute; right: 0; width: 1px; background: #222244; }
+    .col-r32.side-r .slot::after,
+    .col-r16.side-r .slot::after,
+    .col-qf.side-r  .slot::after { content: ''; position: absolute; left: 0; width: 1px; background: #222244; }
+
+    /* odd = first of pair: bracket from center to bottom */
+    .side-l .slot:nth-child(odd)::after  { top: 50%; bottom: 0; }
+    .side-l .slot:nth-child(even)::after { top: 0; height: 50%; }
+    .side-r .slot:nth-child(odd)::after  { top: 50%; bottom: 0; }
+    .side-r .slot:nth-child(even)::after { top: 0; height: 50%; }
+
+    /* horizontal stub from bracket line to next column */
+    .side-l .slot:nth-child(even)::before {
+      content: ''; position: absolute; right: 0; top: 0; width: 4px; height: 1px; background: #222244;
+    }
+    .side-r .slot:nth-child(even)::before {
+      content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 1px; background: #222244;
+    }
+
+    /* ── match cards ─────────────────────────────────────── */
+    .match {
+      width: 100%; border-radius: 9px; background: var(--card);
+      border: 1px solid var(--border); overflow: hidden;
+    }
+    .match.is-final  { border-color: var(--gold); background: linear-gradient(135deg, #1c1600, #0d0d1a); }
+    .match.is-bronze { border-color: #b07c3a; background: linear-gradient(135deg, #1a0d00, #0d0d1a); }
+
+    .t { display: flex; align-items: center; justify-content: space-between; padding: 6px 9px; gap: 4px; }
+    .t + .t { border-top: 1px solid var(--border); }
+    .tn {
+      display: flex; align-items: center; gap: 4px; font-size: 0.74rem;
+      font-weight: 500; color: #777; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .tn.w { color: #eee; font-weight: 700; }
+    .ts { font-size: 0.8rem; font-weight: 700; color: #444; min-width: 18px; text-align: right; }
+    .ts.w { color: var(--gold); }
+    .note { text-align: center; font-size: 0.58rem; color: #555; padding: 0 6px 4px; letter-spacing: 0.04em; }
+
+    /* ── champion box ────────────────────────────────────── */
+    .champ-box { text-align: center; padding: 10px 8px 16px; }
+    .champ-box .trophy { font-size: 2.8rem; display: block; line-height: 1; margin-bottom: 4px; }
+    .champ-box .cl { font-size: 0.6rem; color: #888; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+    .champ-box .cn { font-size: 1.2rem; color: var(--gold); font-weight: 900; margin: 4px 0 0; }
+
+    .bronze-wrap { text-align: center; width: 100%; padding: 12px 4px 0; }
+    .bronze-lbl  { font-size: 0.58rem; color: #b07c3a; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 5px; }
+
+    /* ── results summary bar ─────────────────────────────── */
+    .results-bar {
+      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+      max-width: 900px; margin: 0 auto 20px; padding: 0 16px;
+    }
+    .rb-item {
+      background: #131326; border: 1px solid #252545; border-radius: 10px;
+      padding: 10px 16px; font-size: 0.78rem; text-align: center; flex: 1; min-width: 120px;
+    }
+    .rb-item .lbl { color: #666; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+    .rb-item .val { color: #eee; font-weight: 700; }
+    .rb-item .val.gold { color: var(--gold); }
+
+    @media (max-width: 640px) {
+      .bk-header h1 { font-size: 1.3rem; }
+      :root { --slot: 64px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">⚽ WC2026 Hub</a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">대시보드</a>
+      <a href="blog/index.html" class="nav-link">블로그</a>
+      <a href="bracket.html" class="nav-link active">대진표</a>
+      <a href="about.html" class="nav-link">소개</a>
+    </div>
+  </div>
+</nav>
+
+<div class="bk-header">
+  <h1>🏆 2026 FIFA 월드컵 토너먼트 대진표</h1>
+  <p>32강 · 16강 · 8강 · 4강 · 결승 전체 결과 &nbsp;|&nbsp; 우승: 🇪🇸 Spain (스페인)</p>
+</div>
+
+<div class="results-bar">
+  <div class="rb-item"><div class="lbl">🥇 우승</div><div class="val gold">🇪🇸 Spain</div></div>
+  <div class="rb-item"><div class="lbl">🥈 준우승</div><div class="val">🇦🇷 Argentina</div></div>
+  <div class="rb-item"><div class="lbl">🥉 3위</div><div class="val">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</div></div>
+  <div class="rb-item"><div class="lbl">4위</div><div class="val">🇫🇷 France</div></div>
+  <div class="rb-item"><div class="lbl">결승 스코어</div><div class="val gold">1 – 0 (AET)</div></div>
+  <div class="rb-item"><div class="lbl">결승 득점</div><div class="val">Ferran Torres 106'</div></div>
+</div>
+
+<div class="bk-wrap">
+<div class="bracket">
+
+  <!-- ════ LEFT: R32 ════ -->
+  <div class="col col-r32 side-l">
+    <div class="col-label">32강</div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇪🇸 Spain</span><span class="ts w">3</span></div>
+      <div class="t"><span class="tn">🇦🇹 Austria</span><span class="ts">0</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇵🇹 Portugal</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇭🇷 Croatia</span><span class="ts">1</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇧🇪 Belgium</span><span class="ts w">3</span></div>
+      <div class="t"><span class="tn">🇸🇳 Senegal</span><span class="ts">2</span></div>
+      <div class="note">AET</div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇺🇸 USA</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇧🇦 Bosnia</span><span class="ts">0</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇫🇷 France</span><span class="ts w">3</span></div>
+      <div class="t"><span class="tn">🇸🇪 Sweden</span><span class="ts">0</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇵🇾 Paraguay</span><span class="ts w">1</span></div>
+      <div class="t"><span class="tn">🇩🇪 Germany</span><span class="ts">1</span></div>
+      <div class="note">PEN 4–3</div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇲🇦 Morocco</span><span class="ts w">1</span></div>
+      <div class="t"><span class="tn">🇳🇱 Netherlands</span><span class="ts">1</span></div>
+      <div class="note">PEN 3–2</div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇨🇦 Canada</span><span class="ts w">1</span></div>
+      <div class="t"><span class="tn">🇿🇦 S. Africa</span><span class="ts">0</span></div>
+    </div></div>
+  </div>
+
+  <!-- ════ LEFT: R16 ════ -->
+  <div class="col col-r16 side-l">
+    <div class="col-label">16강</div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇪🇸 Spain</span><span class="ts w">1</span></div>
+      <div class="t"><span class="tn">🇵🇹 Portugal</span><span class="ts">0</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇧🇪 Belgium</span><span class="ts w">4</span></div>
+      <div class="t"><span class="tn">🇺🇸 USA</span><span class="ts">1</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇫🇷 France</span><span class="ts w">1</span></div>
+      <div class="t"><span class="tn">🇵🇾 Paraguay</span><span class="ts">0</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇲🇦 Morocco</span><span class="ts w">3</span></div>
+      <div class="t"><span class="tn">🇨🇦 Canada</span><span class="ts">0</span></div>
+    </div></div>
+  </div>
+
+  <!-- ════ LEFT: QF ════ -->
+  <div class="col col-qf side-l">
+    <div class="col-label">8강</div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇪🇸 Spain</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇧🇪 Belgium</span><span class="ts">1</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇫🇷 France</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇲🇦 Morocco</span><span class="ts">0</span></div>
+    </div></div>
+  </div>
+
+  <!-- ════ LEFT: SF ════ -->
+  <div class="col col-sf side-l">
+    <div class="col-label">4강</div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇪🇸 Spain</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇫🇷 France</span><span class="ts">0</span></div>
+    </div></div>
+  </div>
+
+  <!-- ════ CENTER: FINAL ════ -->
+  <div class="col col-final">
+    <div class="col-label">결승</div>
+
+    <div class="champ-box">
+      <span class="trophy">🏆</span>
+      <div class="cl">World Champion 2026</div>
+      <div class="cn">🇪🇸 Spain</div>
+    </div>
+
+    <div class="match is-final" style="width:100%;max-width:190px;">
+      <div class="t"><span class="tn w">🇪🇸 Spain</span><span class="ts w">1</span></div>
+      <div class="t"><span class="tn">🇦🇷 Argentina</span><span class="ts">0</span></div>
+      <div class="note" style="color:#888;">AET &nbsp;·&nbsp; Ferran Torres 106'</div>
+    </div>
+
+    <div class="bronze-wrap">
+      <div class="bronze-lbl">3위 결정전</div>
+      <div class="match is-bronze" style="max-width:190px;margin:0 auto;">
+        <div class="t"><span class="tn w">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</span><span class="ts w">6</span></div>
+        <div class="t"><span class="tn">🇫🇷 France</span><span class="ts">4</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ RIGHT: SF ════ -->
+  <div class="col col-sf side-r">
+    <div class="col-label">4강</div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇦🇷 Argentina</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</span><span class="ts">1</span></div>
+    </div></div>
+  </div>
+
+  <!-- ════ RIGHT: QF ════ -->
+  <div class="col col-qf side-r">
+    <div class="col-label">8강</div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇳🇴 Norway</span><span class="ts">1</span></div>
+      <div class="note">AET</div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇦🇷 Argentina</span><span class="ts w">3</span></div>
+      <div class="t"><span class="tn">🇨🇭 Switzerland</span><span class="ts">1</span></div>
+      <div class="note">AET</div>
+    </div></div>
+  </div>
+
+  <!-- ════ RIGHT: R16 ════ -->
+  <div class="col col-r16 side-r">
+    <div class="col-label">16강</div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</span><span class="ts w">3</span></div>
+      <div class="t"><span class="tn">🇲🇽 Mexico</span><span class="ts">2</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇳🇴 Norway</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇧🇷 Brazil</span><span class="ts">0</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇦🇷 Argentina</span><span class="ts w">3</span></div>
+      <div class="t"><span class="tn">🇪🇬 Egypt</span><span class="ts">2</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇨🇭 Switzerland</span><span class="ts w">0</span></div>
+      <div class="t"><span class="tn">🇨🇴 Colombia</span><span class="ts">0</span></div>
+      <div class="note">PEN 4–3</div>
+    </div></div>
+  </div>
+
+  <!-- ════ RIGHT: R32 ════ -->
+  <div class="col col-r32 side-r">
+    <div class="col-label">32강</div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🏴󠁧󠁢󠁥󠁮󠁧󠁿 England</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇨🇩 DR Congo</span><span class="ts">1</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇲🇽 Mexico</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇪🇨 Ecuador</span><span class="ts">0</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇳🇴 Norway</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇨🇮 Ivory Coast</span><span class="ts">1</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇧🇷 Brazil</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇯🇵 Japan</span><span class="ts">1</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇦🇷 Argentina</span><span class="ts w">3</span></div>
+      <div class="t"><span class="tn">🇨🇻 Cabo Verde</span><span class="ts">2</span></div>
+      <div class="note">AET</div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇪🇬 Egypt</span><span class="ts w">1</span></div>
+      <div class="t"><span class="tn">🇦🇺 Australia</span><span class="ts">1</span></div>
+      <div class="note">PEN 4–2</div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇨🇭 Switzerland</span><span class="ts w">2</span></div>
+      <div class="t"><span class="tn">🇩🇿 Algeria</span><span class="ts">0</span></div>
+    </div></div>
+
+    <div class="slot"><div class="match">
+      <div class="t"><span class="tn w">🇨🇴 Colombia</span><span class="ts w">1</span></div>
+      <div class="t"><span class="tn">🇬🇭 Ghana</span><span class="ts">0</span></div>
+    </div></div>
+  </div>
+
+</div><!-- .bracket -->
+</div><!-- .bk-wrap -->
+
+<footer class="site-footer">
+  <p>© 2026 WC2026 Hub — 비공식 팬 사이트 · FIFA와 무관 &nbsp;|&nbsp;
+    <a href="privacy.html">개인정보처리방침</a> &nbsp;|&nbsp;
+    <a href="about.html">소개</a>
+  </p>
+</footer>
+</body>
+</html>
